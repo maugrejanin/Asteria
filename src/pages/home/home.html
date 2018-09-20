@@ -1,29 +1,34 @@
 <ion-header>
-  <ion-navbar color='primary'>
-    <ion-title>
-      Asteria
-    </ion-title>
+  <ion-navbar>
+    <ion-title>ChatBot</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-grid>
-    <ion-row>
-      <ion-col col-12>
-        <ion-item>
-          <ion-input type='text' name='question' [(ngModel)]='question'></ion-input>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <button ion-button type="button" block (click)='ask(question)' color='primary'>{{listening? 'Ouvindo...':'Começar a falar'}}</button>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-item *ngFor='let answer of answers'>
-        <p>{{answer}}</p>
-      </ion-item>
-    </ion-row>
-  </ion-grid>
+    <div class="chats">
+      <div class="chatbox">
+        <div *ngFor="let chat of chats">
+          <div class="message sent" *ngIf="chat.type==='user'">
+            {{chat.message}}
+            <!-- <span class="metadata">
+              <span class="time">{{chat.createdAt | date: 'HH:mm aaa'}}</span>
+            </span> -->
+          </div>
+          <div class="message received"  *ngIf="chat.type =='bot'">
+            {{chat.message}}
+            <!-- <span class="metadata">
+              <span class="time">{{chat.createdAt | date: 'HH:mm aaa'}}</span>
+            </span> -->
+          </div>
+        </div>
+      </div>
+      </div>
+
+  <ion-footer>
+      <p text-center *ngIf="sending">sending...</p>
+      <div class="flex-items" padding>
+          <ion-input [(ngModel)]="message" name="message" class="input_message" placeholder="send message ..."></ion-input>
+          <ion-icon (click)="sendVoice()" class="send" name="send"></ion-icon>
+        </div>
+  </ion-footer>
 </ion-content>
