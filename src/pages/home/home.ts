@@ -31,7 +31,7 @@ export class HomePage {
     platform.ready().then(() => {
       ApiAIPromises.init({
         clientAccessToken: "769af9a04dac4a8495ef3802c14ccd30",
-        lang:'pt-BR'
+        lang: 'pt-BR'
       })
 
       this.speechRecognition.hasPermission()
@@ -54,73 +54,31 @@ export class HomePage {
         console.log("listening stopped");
       });
     })
-
-
   }
 
-  sendMessage() {
-    this.addChat(this.message, 'user');
-    ApiAIPromises.requestText({
-      query: this.message
-    })
-      .then(({ result: { fulfillment: { speech } } }) => {
-        this.ngZone.run(() => {
-          this.tts.speak({ text: speech, locale: 'pt-BR', rate: 1.6 })
-            .then(() => console.log('Success'))
-            .catch((reason: any) => console.log(reason));
-          this.addChat(speech, 'bot');
-        });
-      })
-  }
-
-  async sendText() {
+  async sendMessage() {
     try {
-    this.addChat(this.message, 'user');
-    this.addChat((await ApiAIPromises.requestText({query: this.message})).result.fulfillment.speech, 'bot')
+      this.addChat(this.message, 'user');
+      let responseMessage = (await ApiAIPromises.requestText({ query: this.message })).result.fulfillment.speech;
+      this.addChat(responseMessage, 'bot');
+      this.message = '';
+      this.ngZone.run(async () => {
+        await this.tts.speak({ text: responseMessage, locale: 'pt-BR', rate: 1.6 });
+      });
     } catch (e) {
       console.log('errorere:', e);
     }
   }
 
   async sendVoice() {
-    ApiAIPromises.requestVoice({query: this.message}
-      )
+    ApiAIPromises.requestVoice({ query: this.message }
+    )
       .then(function (response) {
-          // some response processing
-          console.log('success', response);
+        console.log('success', response);
       })
       .fail(function (error) {
-          // some error processing
-          console.log(error);
+        console.log(error);
       });
-    // try {
-    //   // this.addChat(this.message, 'user');
-    //   console.log(await ApiAIPromises.requestVoice());
-    //   // this.addChat((await ApiAIPromises.requestVoice({query: this.message})).result.fulfillment.speech, 'bot')
-    //   } catch (e) {
-    //     console.log('errorere:', e);
-    //   }
-    // try {
-    // this.addChat(this.message, 'user');
-
-    //   ApiAIPromises.levelMeterCallback(function (level) {
-    //     console.log(level);
-    //   });
-
-    //   ApiAIPromises.requestVoice(
-    //     {}, // empty for simple requests, some optional parameters can be here
-    //     function (response) {
-    //       console.log(response)
-    //       // place your result processing here
-    //       alert(JSON.stringify(response));
-    //     },
-    //     function (error) {
-    //       // place your error processing here
-    //       alert(error);
-    //     });
-    // } catch (e) {
-    //   alert(e);
-    // }
   }
 
   addChat(message: string, type: string) {
@@ -144,7 +102,7 @@ export class HomePage {
     }
   }
 
-  cancelar(){
+  cancelar() {
     ApiAIPromises.cancelAllRequests();
   }
 

@@ -28,7 +28,7 @@
       <p text-center *ngIf="sending">sending...</p>
       <div class="flex-items" padding>
           <ion-input [(ngModel)]="message" name="message" class="input_message" placeholder="send message ..."></ion-input>
-          <ion-icon (click)="sendVoice()" class="send" name="send"></ion-icon>
+          <ion-icon (click)="sendMessage()" class="send" name="send"></ion-icon>
         </div>
   </ion-footer>
 </ion-content>
