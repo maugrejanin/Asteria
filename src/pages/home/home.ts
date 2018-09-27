@@ -29,6 +29,8 @@ export class HomePage {
     private speechRecognition: SpeechRecognition,
     private tts: TextToSpeech) {
     platform.ready().then(() => {
+      let startPhrase = "Olá Letícia, como posso te ajudar?";
+      this.addChat(startPhrase, "bot");
       ApiAIPromises.init({
         clientAccessToken: "769af9a04dac4a8495ef3802c14ccd30",
         lang: 'pt-BR'
@@ -54,6 +56,22 @@ export class HomePage {
         console.log("listening stopped");
       });
     })
+  }
+
+  ionViewDidLoad() {
+    // let startPhrase = "Olá Letícia, como posso te ajudar?";
+    // this.addChat(startPhrase, "bot");
+  }
+
+  speechText(text) {
+    try {
+      this.ngZone.run(async () => {
+        await this.tts.speak({ text: text, locale: 'pt-BR', rate: 1.6 });
+      });
+    } catch (error) {
+
+    }
+
   }
 
   async sendMessage() {
@@ -82,6 +100,10 @@ export class HomePage {
   }
 
   addChat(message: string, type: string) {
+    if (type == 'bot') {
+      this.speechText(message);
+    }
+
     this.chats.push({ message: message, type: type, createdAt: new Date() });
   }
 
