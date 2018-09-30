@@ -7,4 +7,9 @@ page-home {
         height: 32px;
         font-weight: bold;
     }
+
+    #background_image{
+        background-image: url("../assets/imgs/home.png");
+        background-size: 100% 100%;
+    }
 }
