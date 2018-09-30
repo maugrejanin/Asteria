@@ -1,97 +1,45 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>ChatBot</ion-title>
+  <ion-navbar color='primary'>
+    <button ion-button icon-only menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Pão de açucar</ion-title>
+    <ion-buttons end padding-right>
+      <button ion-button (click)="chat()" id='btn_chat'>
+        M
+      </button>
+    </ion-buttons>
   </ion-navbar>
+
 </ion-header>
 
+
 <ion-content padding>
-  <div class="chats">
-    <div class="chatbox">
-      <div *ngFor="let chat of chats">
-        <div class="message sent" *ngIf="chat.type==='user'">
-          {{chat.message}}
-          <!-- <span class="metadata">
-              <span class="time">{{chat.createdAt | date: 'HH:mm aaa'}}</span>
-            </span> -->
-        </div>
-        <div class="message received" *ngIf="chat.type =='bot'">
-          {{chat.message}}
-          <!-- <span class="metadata">
-              <span class="time">{{chat.createdAt | date: 'HH:mm aaa'}}</span>
-            </span> -->
-        </div>
-      </div>
 
-      <ion-card>
-        <ion-row>
-          <ion-item no-lines>
-            <h2>As ofertas de vinho disponíveis sāo:</h2>
-          </ion-item>
-        </ion-row>
-        <ion-slides pager>
-          <ion-slide>
-            <ion-card>
-              <ion-item justify-content-center>
-                <h2 text-center>20% de desconto</h2>
-              </ion-item>
-              <img padding-top src="assets/imgs/vinho.jpg" class='card_image'>
-              <ion-card-content>
-                <p>Vinho periquita 750ml</p>
-                <button margin-top margin-bottom small ion-button outline text-uppercase>Ativar oferta</button>
-              </ion-card-content>
-            </ion-card>
-          </ion-slide>
-          <ion-slide>
-            <ion-card>
-              <ion-item justify-content-center>
-                <h2 text-center>20% de desconto</h2>
-              </ion-item>
-              <img padding-top src="assets/imgs/vinho.jpg" class='card_image'>
-              <ion-card-content>
-                <p>Vinho periquita 750ml</p>
-                <button margin-top margin-bottom small ion-button outline text-uppercase>Ativar oferta</button>
-              </ion-card-content>
-            </ion-card>
-          </ion-slide>
-          <ion-slide>
-            <ion-card>
-              <ion-item justify-content-center>
-                <h2 text-center>20% de desconto</h2>
-              </ion-item>
-              <img padding-top src="assets/imgs/vinho.jpg" class='card_image'>
-
-              <ion-card-content>
-                <p>Vinho periquita 750ml</p>
-                <button margin-top margin-bottom small ion-button outline text-uppercase>Ativar oferta</button>
-              </ion-card-content>
-            </ion-card>
-          </ion-slide>
-        </ion-slides>
-
-        <ion-row>
-          <ion-col text-center>
-            <button ion-button icon-start clear small>
-              <ion-icon name="thumbs-up"></ion-icon>
-              <!-- <div>12 Likes</div> -->
-            </button>
-          </ion-col>
-          <ion-col text-center>
-            <button ion-button icon-start clear small>
-              <ion-icon name="thumbs-down"></ion-icon>
-              <!-- <div>4 Comments</div> -->
-            </button>
-          </ion-col>
-        </ion-row>
-      </ion-card>
-
-    </div>
-  </div>
-
-  <ion-footer>
-    <p text-center *ngIf="sending">sending...</p>
-    <div class="flex-items" padding>
-      <ion-input [(ngModel)]="message" name="message" class="input_message" placeholder="send message ..."></ion-input>
-      <ion-icon (click)="sendMessage()" class="send" name="send"></ion-icon>
-    </div>
-  </ion-footer>
 </ion-content>
+
+<ion-menu [content]="content" type='overlay'>
+    <ion-content>
+      <ion-list>
+        <ion-item menuClose margin-top no-lines align-items-center>
+          <p>
+            <ion-icon name="search" color='primary'></ion-icon>
+            <span padding-left>Consultar peças</span>
+          </p>
+        </ion-item>
+        <ion-item no-lines align-items-center>
+          <p>
+            <ion-icon name="lock" color='primary'></ion-icon>
+            <span padding-left>Alterar minha senha</span>
+          </p>
+        </ion-item>
+        <ion-item menuClose no-lines>
+          <p>
+            <ion-icon name="exit" color='primary'></ion-icon>
+            <span padding-left>Sair</span>
+          </p>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-menu>
+  <ion-nav #content></ion-nav>

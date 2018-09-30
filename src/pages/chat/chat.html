@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>ChatBot</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div class="chats">
+    <div class="chatbox">
+      <div *ngFor="let chat of chats">
+        <div class="message sent" *ngIf="chat.type==='user'">
+          {{chat.message}}
+          <!-- <span class="metadata">
+              <span class="time">{{chat.createdAt | date: 'HH:mm aaa'}}</span>
+            </span> -->
+        </div>
+        <div class="message received" *ngIf="chat.type =='bot'">
+          {{chat.message}}
+          <!-- <span class="metadata">
+              <span class="time">{{chat.createdAt | date: 'HH:mm aaa'}}</span>
+            </span> -->
+        </div>
+        <div class="message received" *ngIf="chat.type == 'card'">
+          <ion-card>
+            <ion-row>
+              <ion-item no-lines>
+                <h2>As ofertas de vinho disponíveis sāo:</h2>
+              </ion-item>
+            </ion-row>
+            <ion-slides pager>
+              <ion-slide>
+                <ion-card>
+                  <ion-item justify-content-center>
+                    <h2 text-center>20% de desconto</h2>
+                  </ion-item>
+                  <img padding-top src="assets/imgs/vinho.jpg" class='card_image'>
+                  <ion-card-content>
+                    <p>Vinho periquita 750ml</p>
+                    <button margin-top margin-bottom small ion-button outline text-uppercase>Ativar oferta</button>
+                  </ion-card-content>
+                </ion-card>
+              </ion-slide>
+              <ion-slide>
+                <ion-card>
+                  <ion-item justify-content-center>
+                    <h2 text-center>20% de desconto</h2>
+                  </ion-item>
+                  <img padding-top src="assets/imgs/vinho.jpg" class='card_image'>
+                  <ion-card-content>
+                    <p>Vinho periquita 750ml</p>
+                    <button margin-top margin-bottom small ion-button outline text-uppercase>Ativar oferta</button>
+                  </ion-card-content>
+                </ion-card>
+              </ion-slide>
+              <ion-slide>
+                <ion-card>
+                  <ion-item justify-content-center>
+                    <h2 text-center>20% de desconto</h2>
+                  </ion-item>
+                  <img padding-top src="assets/imgs/vinho.jpg" class='card_image'>
+
+                  <ion-card-content>
+                    <p>Vinho periquita 750ml</p>
+                    <button margin-top margin-bottom small ion-button outline text-uppercase>Ativar oferta</button>
+                  </ion-card-content>
+                </ion-card>
+              </ion-slide>
+            </ion-slides>
+
+            <ion-row>
+              <ion-col text-center>
+                <button ion-button icon-start clear small>
+                  <ion-icon name="thumbs-up"></ion-icon>
+                  <!-- <div>12 Likes</div> -->
+                </button>
+              </ion-col>
+              <ion-col text-center>
+                <button ion-button icon-start clear small>
+                  <ion-icon name="thumbs-down"></ion-icon>
+                  <!-- <div>4 Comments</div> -->
+                </button>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+    <div class="flex-items" padding>
+      <ion-input [(ngModel)]="message" name="message" class="input_message" placeholder="Digite aqui..."></ion-input>
+      <ion-icon id='mic_button' (press)="startListen()" *ngIf='!message || message.lenght == 0' class="send" name="mic"></ion-icon>
+      <ion-icon (click)="sendMessage()" *ngIf='message' class="send" name="send"></ion-icon>
+    </div>
+  </ion-footer>
