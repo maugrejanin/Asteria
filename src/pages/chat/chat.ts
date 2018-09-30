@@ -2,7 +2,6 @@ import { Component, NgZone, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, Platform, Navbar } from 'ionic-angular';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
-import { HammerInstance } from '../../../node_modules/@angular/platform-browser/src/dom/events/hammer_gestures';
 declare var ApiAIPromises: any;
 
 
@@ -33,7 +32,7 @@ export class ChatPage {
       let startPhrase = "Olá Letícia, como posso te ajudar?";
       this.addChat(startPhrase, "bot");
       ApiAIPromises.init({
-        clientAccessToken: "769af9a04dac4a8495ef3802c14ccd30",
+        clientAccessToken: "076f9817cd1b404db747d4ba1bc4871c",
         lang: 'pt-BR'
       })
 
@@ -65,9 +64,6 @@ export class ChatPage {
       this.cancelar();
       this.navCtrl.pop();
     }
-    this.btn_listen = new Hammer.Manager(document.getElementById('mic_button'));
-    this.btn_listen.add(new Hammer.Pinch({event:'press'}));
-    this.btn_listen.on('press', function (ev) {console.log(ev)})
 
   }
 
@@ -96,21 +92,21 @@ export class ChatPage {
     }
   }
 
-  async sendVoice() {
-    try {
-      ApiAIPromises.requestVoice()
-			.then( (response) => {
-				console.log("res:", response);
-			})
-			.fail(function (error) {
-				// after stop listening will be thrown "no speech input"
-				console.log("err:", error);
-				
-			})
-    } catch (e) {
-      alert(e);
-    }
-  }
+  // async sendVoice() {
+  //   try {
+  //     ApiAIPromises.requestVoice()
+  // 		.then( (response) => {
+  // 			console.log("res:", response);
+  // 		})
+  // 		.fail(function (error) {
+  // 			// after stop listening will be thrown "no speech input"
+  // 			console.log("err:", error);
+
+  // 		})
+  //   } catch (e) {
+  //     alert(e);
+  //   }
+  // }
 
   addChat(message: string, type: string) {
     if (type == 'bot') {
@@ -121,21 +117,24 @@ export class ChatPage {
   }
 
   startListen() {
-    if (!this.listening) {
-      console.log('listen');
-      this.listening = true;
-      this.speechRecognition.startListening({ language: 'pt-BR' })
-        .subscribe(
-          (matches: Array<string>) => {
-            console.log(matches);
-            // this.sendMessage();
-          },
-          (onerror) => console.log('error:', onerror)
-        )
-    } else {
-      this.listening = false;
-      this.speechRecognition.stopListening();
-    }
+    console.log('listen');
+    this.listening = true;
+    this.speechRecognition.startListening({ language: 'pt-BR', showPartial: true })
+      .subscribe(
+        (matches: Array<string>) => {
+          console.log(matches);
+          this.message = matches[0];
+          // this.sendMessage();
+        },
+        (onerror) => console.log('error:', onerror)
+      )
+  }
+
+  stopListen() {
+    this.speechRecognition.stopListening();
+    if(this.message.length > 0){
+      this.sendMessage();
+    } 
   }
 
   cancelar() {

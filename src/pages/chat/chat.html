@@ -91,7 +91,7 @@
 <ion-footer>
     <div class="flex-items" padding>
       <ion-input [(ngModel)]="message" name="message" class="input_message" placeholder="Digite aqui..."></ion-input>
-      <ion-icon id='mic_button' (press)="startListen()" *ngIf='!message || message.lenght == 0' class="send" name="mic"></ion-icon>
+      <ion-icon (touchstart)="startListen()" (touchend)="stopListen()" *ngIf='!message || message.lenght == 0' class="send" name="mic"></ion-icon>
       <ion-icon (click)="sendMessage()" *ngIf='message' class="send" name="send"></ion-icon>
     </div>
   </ion-footer>
