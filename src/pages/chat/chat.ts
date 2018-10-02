@@ -1,5 +1,5 @@
 import { Component, NgZone, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Platform, Navbar } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Platform, Navbar, Content, AlertController } from 'ionic-angular';
 import { SpeechRecognition } from '@ionic-native/speech-recognition';
 import { TextToSpeech } from '@ionic-native/text-to-speech';
 declare var ApiAIPromises: any;
@@ -24,10 +24,48 @@ export class ChatPage {
   listening = false;
   message: string;
   btn_listen;
-  constructor(public navCtrl: NavController, public navParams: NavParams, public ngZone: NgZone,
+  timeout;
+  vinhos = [];
+  frutas = [];
+  likeVinho = false;
+  unlikeVinho = false;
+  likeFrutas = false;
+  unlikeFrutas = false;
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public ngZone: NgZone,
     public platform: Platform,
+    private alertCtrl: AlertController,
     private speechRecognition: SpeechRecognition,
     private tts: TextToSpeech) {
+    this.vinhos = [{
+      img: "assets/imgs/vinho1.jpg",
+      desconto: 20,
+      descricao: "Vinho periquita 750ml"
+    }, {
+      img: "assets/imgs/vinho2.jpg",
+      desconto: 10,
+      descricao: "Vinho Concha Y Toro 750 ml"
+    }, {
+      img: "assets/imgs/vinho3.jpg",
+      desconto: 15,
+      descricao: "inho Nacional Pérgola 1 Litro"
+    }];
+
+    this.frutas = [{
+      img: "assets/imgs/fruta1.jpg",
+      desconto: 20,
+      descricao: "Maçã"
+    }, {
+      img: "assets/imgs/fruta2.jpg",
+      desconto: 10,
+      descricao: "Kiwi"
+    }, {
+      img: "assets/imgs/fruta3.jpg",
+      desconto: 15,
+      descricao: "Carambola"
+    }];
     platform.ready().then(() => {
       let startPhrase = "Olá Letícia, como posso te ajudar?";
       this.addChat(startPhrase, "bot");
@@ -59,12 +97,11 @@ export class ChatPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ChatPage');
     this.navBar.backButtonClick = () => {
       this.cancelar();
+      clearTimeout(this.timeout);
       this.navCtrl.pop();
     }
-
   }
 
   speechText(text) {
@@ -75,7 +112,6 @@ export class ChatPage {
     } catch (error) {
 
     }
-
   }
 
   async sendMessage() {
@@ -84,47 +120,40 @@ export class ChatPage {
       let responseMessage = (await ApiAIPromises.requestText({ query: this.message })).result.fulfillment.speech;
       this.addChat(responseMessage, 'bot');
       this.message = '';
-      this.ngZone.run(async () => {
-        await this.tts.speak({ text: responseMessage, locale: 'pt-BR', rate: 1.6 });
-      });
     } catch (e) {
       console.log('errorere:', e);
     }
   }
 
-  // async sendVoice() {
-  //   try {
-  //     ApiAIPromises.requestVoice()
-  // 		.then( (response) => {
-  // 			console.log("res:", response);
-  // 		})
-  // 		.fail(function (error) {
-  // 			// after stop listening will be thrown "no speech input"
-  // 			console.log("err:", error);
-
-  // 		})
-  //   } catch (e) {
-  //     alert(e);
-  //   }
-  // }
-
   addChat(message: string, type: string) {
     if (type == 'bot') {
-      this.speechText(message);
+      if (message.toLowerCase() == "mostrar vinhos") {
+        this.speechText("Essas são as ofertas de vinho de hoje");
+        this.chats.push({ message: "vinho", type: "offer", createdAt: new Date() });
+        this.timeout = setTimeout(() => {
+          this.addChat("Posso te ajudar com mais alguma coisa?", "bot");
+        }, 15000)
+      } else if (message.toLowerCase() == "horti fruti") {
+        this.speechText("Baseado no que você gosta, as ofertas dessa semana são");
+        this.chats.push({ message: "horti fruti", type: "offer", createdAt: new Date() });
+        this.timeout = setTimeout(() => {
+          this.addChat("Se precisar, é só me chamar!", "bot");
+        }, 5000);
+      } else {
+        this.speechText(message);
+        this.chats.push({ message: message, type: type, createdAt: new Date() });
+      }
+    } else {
+      this.chats.push({ message: message, type: type, createdAt: new Date() });
     }
-
-    this.chats.push({ message: message, type: type, createdAt: new Date() });
   }
 
   startListen() {
-    console.log('listen');
     this.listening = true;
     this.speechRecognition.startListening({ language: 'pt-BR', showPartial: true })
       .subscribe(
         (matches: Array<string>) => {
-          console.log(matches);
           this.message = matches[0];
-          // this.sendMessage();
         },
         (onerror) => console.log('error:', onerror)
       )
@@ -132,9 +161,34 @@ export class ChatPage {
 
   stopListen() {
     this.speechRecognition.stopListening();
-    if(this.message.length > 0){
+    if (this.message.length > 0) {
       this.sendMessage();
-    } 
+    }
+  }
+
+  ativarOferta() {
+    this.alertCtrl.create({
+      title: 'Confirmar desconto',
+      message: 'Deseja realmente aplicar o desconto nesse produto?',
+      buttons: [
+        "Nao",
+        {
+          text: 'Sim',
+          handler: () => {
+            let alert = this.alertCtrl.create({
+              buttons: ["OK"],
+              title: "Confirmação",
+              message: "Desconto aplicado."
+            });
+            alert.present();
+            alert.onDidDismiss(() => {
+              clearTimeout(this.timeout);
+              this.navCtrl.pop();
+            })
+          }
+        }
+      ]
+    }).present();
   }
 
   cancelar() {
